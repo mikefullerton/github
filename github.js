@@ -93,8 +93,6 @@
       })();
     }
 
-
-
     // User API
     // =======
 
@@ -743,7 +741,28 @@
     this.getGist = function(id) {
       return new Github.Gist({id: id});
     };
+
+	this.getOrg = function(name, cb) {
+		_request("GET", "/orgs/" + name, null, function(err, res) {
+			cb(err, res);
+		});
+    }
+    
+    this.getReposForOrg = function(orgname, cb) {
+		// Github does not always honor the 1000 limit so we want to iterate over the data set.
+		_requestAllPages("/orgs/"+orgname+"?type=all&&page_num=1000&sort=updated&direction=desc", function(err, res) {
+		  cb(err, res);
+		});
+    }
   };
+
+	this.getApiUrl = function() {
+		return API_URL;
+	}
+
+	this.setApiUrl = function(url) {
+		API_URL = url;
+	}
 
 
   if (typeof exports !== 'undefined') {
